@@ -11,6 +11,9 @@ import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +34,11 @@ public class CategoryService {
 	
 	//trata como uma transacao no BD
 	@Transactional(readOnly = true)
-	public List<CategoryDTO> findAll(){
-		List<Category> list = repository.findAll();
+	public Page<CategoryDTO> findAllPaged(PageRequest pageRequest){
+		Page<Category> list = repository.findAll(pageRequest);
 		//esta retornando um lista de Category a convertendo em um CategoryDTO
-		//por referencia => return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());
-		return list.stream().map(CategoryDTO::new).collect(Collectors.toList());
+		//return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());
+		return list.map(CategoryDTO::new);
 	}
 
 	@Transactional(readOnly = true)
