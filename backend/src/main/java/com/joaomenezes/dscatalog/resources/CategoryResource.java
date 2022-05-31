@@ -21,11 +21,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping(value = "/categories")
 public class CategoryResource {
-	
+
 	//injetar automaticamente a dependencia
 	@Autowired
 	private CategoryService service;
-	
+
 	@GetMapping
 	public ResponseEntity<List<CategoryDTO>> findAll(){
 		List<CategoryDTO> list = service.findAll();
@@ -38,6 +38,7 @@ public class CategoryResource {
 		return ResponseEntity.ok().body(dto);
 	}
 
+	//insert new category
 	@PostMapping
 	public ResponseEntity<CategoryDTO> insertCategory(@RequestBody CategoryDTO dto) {
 		dto = service.insertCategory(dto);
@@ -49,5 +50,10 @@ public class CategoryResource {
 		return ResponseEntity.created(uri).body(dto);
 	}
 
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO dto) {
+		dto = service.updateCategory(id, dto);
+		return ResponseEntity.ok().body(dto);
+	}
 
 }
