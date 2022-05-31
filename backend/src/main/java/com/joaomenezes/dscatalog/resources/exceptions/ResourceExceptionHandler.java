@@ -1,5 +1,6 @@
 package com.joaomenezes.dscatalog.resources.exceptions;
 
+import com.joaomenezes.dscatalog.services.exceptions.DatabaseException;
 import com.joaomenezes.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,27 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> ResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest req){
+        HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError err = new StandardError();
         err.setTimestamp(Instant.now());
-        err.setStatus(HttpStatus.NOT_FOUND.value());
+        err.setStatus(status.value());
         err.setError("Not Found");
         err.setMessage(e.getMessage());
         err.setPath(req.getRequestURI());
-        return ResponseEntity.status(404).body(err);
+        return ResponseEntity.status(status).body(err);
     }
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest req){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Database Exception");
+        err.setMessage(e.getMessage());
+        err.setPath(req.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+
+
 }

@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.joaomenezes.dscatalog.services.exceptions.DatabaseException;
 import com.joaomenezes.dscatalog.services.exceptions.ResourceNotFoundException;
+import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +34,8 @@ public class CategoryService {
 	public List<CategoryDTO> findAll(){
 		List<Category> list = repository.findAll();
 		//esta retornando um lista de Category a convertendo em um CategoryDTO
-		//por referencia => return list.stream().map(CategoryDTO::new).collect(Collectors.toList());
-		return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());
+		//por referencia => return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());
+		return list.stream().map(CategoryDTO::new).collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
@@ -63,4 +67,14 @@ public class CategoryService {
 			throw new ResourceNotFoundException("Entity not found, id: " + id);
 		}
     }
+
+	public void deleteCategory(Long id) {
+		try {
+			repository.deleteById(id);
+		}catch (EmptyResultDataAccessException e){
+			throw new ResourceNotFoundException("Entity not found, id: " + id);
+		}catch (DataIntegrityViolationException e){
+			throw new DatabaseException("Integrity Violation" + e.getMessage());
+		}
+	}
 }

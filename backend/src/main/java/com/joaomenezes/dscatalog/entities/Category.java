@@ -1,13 +1,10 @@
 package com.joaomenezes.dscatalog.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 //Serializable permite o obj 
@@ -21,8 +18,12 @@ public class Category implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	
-	
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant dateCreated;
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant dateUpdated;
+
 	public Category() {}
 
 	public Category(Long id, String name) {
@@ -46,14 +47,30 @@ public class Category implements Serializable{
 		this.name = name;
 	}
 
-	
+	public Instant getDateCreated() {
+		return dateCreated;
+	}
+
+	public Instant getDateUpdated() {
+		return dateUpdated;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		dateCreated = Instant.now();
+	}
+
+	@PreUpdate
+	public void preUpdated() {
+		dateUpdated = Instant.now();
+	}
 	//ambos comparam os valores de dois objs (categoria) pelo ID
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
 	}
 
-	
+	//compração mais acirrada
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
