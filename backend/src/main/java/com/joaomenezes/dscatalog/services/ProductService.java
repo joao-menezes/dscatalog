@@ -1,78 +1,73 @@
 package com.joaomenezes.dscatalog.services;
 
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.joaomenezes.dscatalog.dto.ProductDTO;
+import com.joaomenezes.dscatalog.dto.ProductDTO;
+import com.joaomenezes.dscatalog.entities.Product;
+import com.joaomenezes.dscatalog.repositories.CategoryRepository;
+import com.joaomenezes.dscatalog.repositories.ProductRepository;
 import com.joaomenezes.dscatalog.services.exceptions.DatabaseException;
 import com.joaomenezes.dscatalog.services.exceptions.ResourceNotFoundException;
-import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.joaomenezes.dscatalog.dto.CategoryDTO;
-import com.joaomenezes.dscatalog.entities.Category;
-import com.joaomenezes.dscatalog.repositories.CategoryRepository;
-
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 //essa annotation ira registrar a classe como um componente
 //que ira participar do sistema de injecao de dependencia automatizado do spring
 @Service
-public class CategoryService {
+public class ProductService {
 	
 	@Autowired
-	private CategoryRepository repository;
+	private ProductRepository repository;
 	
 	
 	//trata como uma transacao no BD
 	@Transactional(readOnly = true)
-	public Page<CategoryDTO> findAllPaged(PageRequest pageRequest){
-		Page<Category> list = repository.findAll(pageRequest);
-		//esta retornando um lista de Category a convertendo em um CategoryDTO
-		//return list.stream().map(x -> new CategoryDTO(x)).collect(Collectors.toList());
-		return list.map(CategoryDTO::new);
+	public Page<ProductDTO> findAllPaged(PageRequest pageRequest){
+		Page<Product> list = repository.findAll(pageRequest);
+		//esta retornando um lista de Product a convertendo em um ProductDTO
+		//return list.stream().map(x -> new ProductDTO(x)).collect(Collectors.toList());
+		return list.map(ProductDTO::new);
 	}
 
 	@Transactional(readOnly = true)
-	public CategoryDTO findById(Long id) {
-		Optional<Category> obj = repository.findById(id);
-		Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+	public ProductDTO findById(Long id) {
+		Optional<Product> obj = repository.findById(id);
+		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 
-		return new CategoryDTO(entity);
+		return new ProductDTO(entity, entity.getCategories());
 	}
 
 	@Transactional
-	public CategoryDTO insertCategory(CategoryDTO dto) {
-		Category entity = new Category();
-		entity.setName(dto.getName());
+	public ProductDTO insertProduct(ProductDTO dto) {
+		Product entity = new Product();
+		//entity.setName(dto.getName());
 		entity = repository.save(entity);
 
-		return new CategoryDTO(entity);
+		return new ProductDTO(entity);
 	}
 
 	@Transactional
-    public CategoryDTO updateCategory(Long id, CategoryDTO dto) {
+    public ProductDTO updateProduct(Long id, ProductDTO dto) {
 		try {
-			Category entity = repository.getById(id);
-			entity.setName(dto.getName());
+			Product entity = repository.getById(id);
+			//entity.setName(dto.getName());
 			entity = repository.save(entity);
-			return new CategoryDTO(entity);
+			return new ProductDTO(entity);
 
 		}catch (EntityNotFoundException e){
 			throw new ResourceNotFoundException("Entity not found, id: " + id);
 		}
     }
 
-	public void deleteCategory(Long id) {
+	public void deleteProduct(Long id) {
 		try {
 			repository.deleteById(id);
 		}catch (EmptyResultDataAccessException e){
@@ -81,4 +76,5 @@ public class CategoryService {
 			throw new DatabaseException("Integrity Violation" + e.getMessage());
 		}
 	}
+
 }
