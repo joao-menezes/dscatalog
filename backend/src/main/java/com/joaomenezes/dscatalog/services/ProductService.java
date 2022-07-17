@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +35,8 @@ public class ProductService {
 	
 	//trata como uma transacao no BD
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAllPaged(PageRequest pageRequest){
-		Page<Product> list = repository.findAll(pageRequest);
-		//esta retornando um lista de Product a convertendo em um ProductDTO
-		//return list.stream().map(x -> new ProductDTO(x)).collect(Collectors.toList());
+	public Page<ProductDTO> findAllPaged(Pageable pageable){
+		Page<Product> list = repository.findAll(pageable);
 		return list.map(ProductDTO::new);
 	}
 
@@ -90,7 +89,7 @@ public class ProductService {
 
 		entity.getCategories().clear();
 		for(CategoryDTO catDto : dto.getCategories()){
-			Category category = categoryRepository.getOne(catDto.getId());
+			Category category = categoryRepository.getById(catDto.getId());
 			entity.getCategories().add(category);
 		}
 	}
