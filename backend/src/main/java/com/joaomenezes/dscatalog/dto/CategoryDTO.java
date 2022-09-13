@@ -3,6 +3,8 @@ package com.joaomenezes.dscatalog.dto;
 import java.io.Serializable;
 
 import com.joaomenezes.dscatalog.entities.Category;
+import org.hibernate.annotations.GenericGenerator;
+
 
 public class CategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;

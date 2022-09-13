@@ -3,7 +3,6 @@ package com.joaomenezes.dscatalog.services;
 
 import com.joaomenezes.dscatalog.dto.CategoryDTO;
 import com.joaomenezes.dscatalog.dto.ProductDTO;
-import com.joaomenezes.dscatalog.dto.ProductDTO;
 import com.joaomenezes.dscatalog.entities.Category;
 import com.joaomenezes.dscatalog.entities.Product;
 import com.joaomenezes.dscatalog.repositories.CategoryRepository;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

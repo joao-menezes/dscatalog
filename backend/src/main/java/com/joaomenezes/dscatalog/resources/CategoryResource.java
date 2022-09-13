@@ -1,14 +1,10 @@
 package com.joaomenezes.dscatalog.resources;
 
 import java.net.URI;
-import java.util.List;
 
-import com.joaomenezes.dscatalog.entities.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +46,6 @@ public class CategoryResource {
 				.fromCurrentRequest()
 				.path("/{id}")
 				.buildAndExpand(dto.getId()).toUri();
-		//repsonse with code 201
 		return ResponseEntity.created(uri).body(dto);
 	}
 
